@@ -95,6 +95,9 @@ private:
 	//@{
 	void visitAssert(FunctionCall const& _funCall);
 	void visitRequire(FunctionCall const& _funCall);
+	void visitAddMod(FunctionCall const& _funCall) override;
+	void visitMulMod(FunctionCall const& _funCall) override;
+	void visitAddMulMod(FunctionCall const& _funCall);
 	/// Visits the FunctionDefinition of the called function
 	/// if available and inlines the return value.
 	void inlineFunctionCall(FunctionCall const& _funCall);

@@ -137,6 +137,8 @@ protected:
 	void visitAssert(FunctionCall const& _funCall);
 	void visitRequire(FunctionCall const& _funCall);
 	void visitGasLeft(FunctionCall const& _funCall);
+	virtual void visitAddMod(FunctionCall const& _funCall);
+	virtual void visitMulMod(FunctionCall const& _funCall);
 	void visitObjectCreation(FunctionCall const& _funCall);
 	void visitTypeConversion(FunctionCall const& _funCall);
 	void visitFunctionIdentifier(Identifier const& _identifier);

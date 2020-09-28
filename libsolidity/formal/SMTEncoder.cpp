@@ -632,8 +632,12 @@ void SMTEncoder::endVisit(FunctionCall const& _funCall)
 	case FunctionType::Kind::SHA256:
 	case FunctionType::Kind::RIPEMD160:
 	case FunctionType::Kind::BlockHash:
+		break;
 	case FunctionType::Kind::AddMod:
+		visitAddMod(_funCall);
+		break;
 	case FunctionType::Kind::MulMod:
+		visitMulMod(_funCall);
 		break;
 	case FunctionType::Kind::Send:
 	case FunctionType::Kind::Transfer:
@@ -736,6 +740,32 @@ void SMTEncoder::visitGasLeft(FunctionCall const& _funCall)
 	m_context.setUnknownValue(*symbolicVar);
 	if (index > 0)
 		m_context.addAssertion(symbolicVar->currentValue() <= symbolicVar->valueAtIndex(index - 1));
+}
+
+void SMTEncoder::visitAddMod(FunctionCall const& _funCall)
+{
+	FunctionType const& funType = dynamic_cast<FunctionType const&>(*_funCall.expression().annotation().type);
+	solAssert(funType.kind() == FunctionType::Kind::AddMod, "");
+	auto const& args = _funCall.arguments();
+	solAssert(args.at(0) && args.at(1) && args.at(2), "");
+	auto x = expr(*args.at(0));
+	auto y = expr(*args.at(1));
+	auto k = expr(*args.at(2));
+	m_context.addAssertion(k != 0);
+	defineExpr(_funCall, (x + y) % k);
+}
+
+void SMTEncoder::visitMulMod(FunctionCall const& _funCall)
+{
+	FunctionType const& funType = dynamic_cast<FunctionType const&>(*_funCall.expression().annotation().type);
+	solAssert(funType.kind() == FunctionType::Kind::MulMod, "");
+	auto const& args = _funCall.arguments();
+	solAssert(args.at(0) && args.at(1) && args.at(2), "");
+	auto x = expr(*args.at(0));
+	auto y = expr(*args.at(1));
+	auto k = expr(*args.at(2));
+	m_context.addAssertion(k != 0);
+	defineExpr(_funCall, (x * y) % k);
 }
 
 void SMTEncoder::visitObjectCreation(FunctionCall const& _funCall)

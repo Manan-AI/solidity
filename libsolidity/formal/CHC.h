@@ -83,6 +83,9 @@ private:
 	void endVisit(Continue const& _node) override;
 
 	void visitAssert(FunctionCall const& _funCall);
+	void visitAddMod(FunctionCall const& _funCall) override;
+	void visitMulMod(FunctionCall const& _funCall) override;
+	void visitAddMulMod(FunctionCall const& _funCall);
 	void internalFunctionCall(FunctionCall const& _funCall);
 	void externalFunctionCall(FunctionCall const& _funCall);
 	void unknownFunctionCall(FunctionCall const& _funCall);
